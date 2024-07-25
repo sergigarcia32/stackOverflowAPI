@@ -13,20 +13,26 @@ class StackOverflowService implements StackOverflowServiceInterface
         $this->client = $client;
     }
 
-    public function fetchQuestions(string $tagged, string $order, string $sort): array
+    public function fetchQuestions(string $tagged, string $order, string $sort, ?string $fromDate = null, ?string $toDate = null): array
     {
-        $response = $this->client->request(
-            'GET',
-            'https://api.stackexchange.com/2.3/questions',
-            [
-                'query' => [
-                    'order' => $order,
-                    'sort' => $sort,
-                    'site' => 'stackoverflow',
-                    'tagged' => $tagged
-                ]
-            ]
-        );
+        $query = [
+            'order' => $order,
+            'sort' => $sort,
+            'site' => 'stackoverflow',
+            'tagged' => $tagged,
+        ];
+
+        if ($fromDate) {
+            $query['fromDate'] = $fromDate;
+        }
+
+        if ($toDate) {
+            $query['toDate'] = $toDate;
+        }
+
+        $response = $this->client->request('GET', 'https://api.stackexchange.com/2.3/questions', [
+            'query' => $query
+        ]);
 
         $statusCode = $response->getStatusCode();
         $content = $response->getContent();
