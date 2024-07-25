@@ -2,3 +2,8 @@ when@dev:
     _errors:
         resource: '@FrameworkBundle/Resources/config/routing/errors.xml'
         prefix: /_error
+        
+stackoverflow_questions:
+    path: /api/stackoverflow/questions
+    controller: App\Controller\StackOverflowController::getQuestions
+    methods: GET
