@@ -39,32 +39,39 @@ class StackOverflowController extends AbstractController
         if (!$tagged) {
             return new JsonResponse(['error' => 'El parámetro "tagged" es obligatorio.'], Response::HTTP_BAD_REQUEST);
         }
+        try {
+            $queryKey = md5(json_encode([
+                'tagged' => $tagged,
+                'order' => $order,
+                'sort' => $sort,
+                'fromDate' => $fromDate,
+                'toDate' => $toDate
+            ]));
 
-        $queryKey = md5(json_encode([
-            'tagged' => $tagged,
-            'order' => $order,
-            'sort' => $sort,
-            'fromDate' => $fromDate,
-            'toDate' => $toDate
-        ]));
+            $fromDateTime = $fromDate ? new \DateTime($fromDate) : null;
+            $toDateTime = $toDate ? new \DateTime($toDate) : null;
 
-        $fromDateTime = $fromDate ? new \DateTime($fromDate) : null;
-        $toDateTime = $toDate ? new \DateTime($toDate) : null;
+            $existingResult = $this->queryResultRepository->findAllByQuery($queryKey, $fromDateTime, $toDateTime);
 
-        $existingResult = $this->queryResultRepository->findAllByQuery($queryKey, $fromDateTime, $toDateTime);
+            if ($existingResult) {
+                $response = [
+                    'items' => array_map(function ($result) {
+                        return $result->toArray();
+                    }, $existingResult)
+                ];
+                return new JsonResponse($response, Response::HTTP_OK);
+            }
 
-        if ($existingResult) {
-            $response = [
-                'items' => array_map(function ($result) {
-                    return $result->toArray();
-                }, $existingResult)
-            ];
-            return new JsonResponse($response, Response::HTTP_OK);
+            $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $fromDate, $toDate);
+            if (empty($data)) {
+                return new JsonResponse(['error' => 'No se encontraron preguntas para los criterios especificados.'], Response::HTTP_NOT_FOUND);
+            }
+
+            $this->entityManager->saveQuestions($data, $queryKey, $tagged);
+
+            return new JsonResponse($data, Response::HTTP_OK);
+        } catch (\Exception $e) {
+            return new JsonResponse(['error' => 'Ocurrió un error interno del servidor.'], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
-
-        $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $fromDate, $toDate);
-        $this->entityManager->saveQuestions($data, $queryKey, $tagged);
-
-        return new JsonResponse($data, Response::HTTP_OK);
     }
 }
