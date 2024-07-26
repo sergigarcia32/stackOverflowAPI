@@ -14,46 +14,46 @@ class StackOverflowQuestion
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private array $tags = [];
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $owner_acount_id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $owner_reputation = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $owner_user_id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $owner_user_type = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $owner_profile_image = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $owner_display_name = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $owner_link = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?bool $is_answered = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $view_count = null;
 
     #[ORM\Column(nullable: true)]
     private ?int $accepted_answered_id = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $answer_count = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $integer = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $score = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
@@ -65,16 +65,16 @@ class StackOverflowQuestion
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $last_edit_date = null;
 
-    #[ORM\Column]
+    #[ORM\Column(nullable: true)]
     private ?int $question_id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $link = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $title = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $query = null;
 
     public function getId(): ?int
@@ -106,7 +106,7 @@ class StackOverflowQuestion
         return $this->owner_acount_id;
     }
 
-    public function setOwnerAcountId(int $owner_acount_id): static
+    public function setOwnerAcountId(?int $owner_acount_id): static
     {
         $this->owner_acount_id = $owner_acount_id;
 
@@ -118,7 +118,7 @@ class StackOverflowQuestion
         return $this->owner_reputation;
     }
 
-    public function setOwnerReputation(int $owner_reputation): static
+    public function setOwnerReputation(?int $owner_reputation): static
     {
         $this->owner_reputation = $owner_reputation;
 
@@ -130,7 +130,7 @@ class StackOverflowQuestion
         return $this->owner_user_id;
     }
 
-    public function setOwnerUserId(int $owner_user_id): static
+    public function setOwnerUserId(?int $owner_user_id): static
     {
         $this->owner_user_id = $owner_user_id;
 
@@ -142,7 +142,7 @@ class StackOverflowQuestion
         return $this->owner_user_type;
     }
 
-    public function setOwnerUserType(string $owner_user_type): static
+    public function setOwnerUserType(?string $owner_user_type): static
     {
         $this->owner_user_type = $owner_user_type;
 
@@ -154,7 +154,7 @@ class StackOverflowQuestion
         return $this->owner_profile_image;
     }
 
-    public function setOwnerProfileImage(string $owner_profile_image): static
+    public function setOwnerProfileImage(?string $owner_profile_image): static
     {
         $this->owner_profile_image = $owner_profile_image;
 
@@ -166,7 +166,7 @@ class StackOverflowQuestion
         return $this->owner_display_name;
     }
 
-    public function setOwnerDisplayName(string $owner_display_name): static
+    public function setOwnerDisplayName(?string $owner_display_name): static
     {
         $this->owner_display_name = $owner_display_name;
 
@@ -178,7 +178,7 @@ class StackOverflowQuestion
         return $this->owner_link;
     }
 
-    public function setOwnerLink(string $owner_link): static
+    public function setOwnerLink(?string $owner_link): static
     {
         $this->owner_link = $owner_link;
 
@@ -190,7 +190,7 @@ class StackOverflowQuestion
         return $this->is_answered;
     }
 
-    public function setAnswered(bool $is_answered): static
+    public function setAnswered(?bool $is_answered): static
     {
         $this->is_answered = $is_answered;
 
@@ -202,7 +202,7 @@ class StackOverflowQuestion
         return $this->view_count;
     }
 
-    public function setViewCount(int $view_count): static
+    public function setViewCount(?int $view_count): static
     {
         $this->view_count = $view_count;
 
@@ -226,7 +226,7 @@ class StackOverflowQuestion
         return $this->answer_count;
     }
 
-    public function setAnswerCount(int $answer_count): static
+    public function setAnswerCount(?int $answer_count): static
     {
         $this->answer_count = $answer_count;
 
@@ -250,7 +250,7 @@ class StackOverflowQuestion
         return $this->score;
     }
 
-    public function setScore(int $score): static
+    public function setScore(?int $score): static
     {
         $this->score = $score;
 
@@ -262,7 +262,7 @@ class StackOverflowQuestion
         return $this->last_activity_date;
     }
 
-    public function setLastActivityDate(\DateTimeInterface $last_activity_date): static
+    public function setLastActivityDate(?\DateTimeInterface $last_activity_date): static
     {
         $this->last_activity_date = $last_activity_date;
 
@@ -274,7 +274,7 @@ class StackOverflowQuestion
         return $this->creation_date;
     }
 
-    public function setCreationDate(\DateTimeInterface $creation_date): static
+    public function setCreationDate(?\DateTimeInterface $creation_date): static
     {
         $this->creation_date = $creation_date;
 
@@ -286,7 +286,7 @@ class StackOverflowQuestion
         return $this->last_edit_date;
     }
 
-    public function setLastEditDate(\DateTimeInterface $last_edit_date): static
+    public function setLastEditDate(?\DateTimeInterface $last_edit_date): static
     {
         $this->last_edit_date = $last_edit_date;
 
@@ -298,7 +298,7 @@ class StackOverflowQuestion
         return $this->question_id;
     }
 
-    public function setQuestionId(int $question_id): static
+    public function setQuestionId(?int $question_id): static
     {
         $this->question_id = $question_id;
 
@@ -310,7 +310,7 @@ class StackOverflowQuestion
         return $this->link;
     }
 
-    public function setLink(string $link): static
+    public function setLink(?string $link): static
     {
         $this->link = $link;
 
@@ -322,7 +322,7 @@ class StackOverflowQuestion
         return $this->title;
     }
 
-    public function setTitle(string $title): static
+    public function setTitle(?string $title): static
     {
         $this->title = $title;
 

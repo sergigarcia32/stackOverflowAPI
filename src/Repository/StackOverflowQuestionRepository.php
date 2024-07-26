@@ -20,9 +20,23 @@ class StackOverflowQuestionRepository extends ServiceEntityRepository
      * @param string $queryKey
      * @return StackOverflowQuestion[]
      */
-    public function findAllByQuery(string $queryKey): array
+    public function findAllByQuery(string $queryKey, ?\DateTime $fromDate = null, ?\DateTime $toDate = null): array
     {
-        return $this->findBy(['query' => $queryKey]);
+        $qb = $this->createQueryBuilder('q')
+            ->where('q.query = :queryKey')
+            ->setParameter('queryKey', $queryKey);
+
+        if ($fromDate) {
+            $qb->andWhere('q.creation_date >= :fromDate')
+            ->setParameter('fromDate', $fromDate);
+        }
+
+        if ($toDate) {
+            $qb->andWhere('q.creation_date <= :toDate')
+            ->setParameter('toDate', $toDate);
+        }
+
+        return $qb->getQuery()->getResult();
     }
 
     public function findOneByQueryKey(string $queryKey)

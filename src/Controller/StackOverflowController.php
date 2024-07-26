@@ -48,7 +48,10 @@ class StackOverflowController extends AbstractController
             'toDate' => $toDate
         ]));
 
-        $existingResult = $this->queryResultRepository->findAllByQuery($queryKey);
+        $fromDateTime = $fromDate ? new \DateTime($fromDate) : null;
+        $toDateTime = $toDate ? new \DateTime($toDate) : null;
+
+        $existingResult = $this->queryResultRepository->findAllByQuery($queryKey, $fromDateTime, $toDateTime);
 
         if ($existingResult) {
             $response = [
