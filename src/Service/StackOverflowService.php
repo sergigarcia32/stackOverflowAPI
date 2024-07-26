@@ -41,6 +41,7 @@ class StackOverflowService implements StackOverflowServiceInterface
         if ($statusCode !== 200 || !isset($data['items'])) {
             throw new \Exception('Failed to fetch questions from StackOverflow');
         }
+
         return $data['items'];
     }
 }

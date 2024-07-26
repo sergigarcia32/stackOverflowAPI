@@ -33,8 +33,8 @@ class StackOverflowController extends AbstractController
         $tagged = $request->query->get('tagged');
         $order = $request->query->get('order', 'desc');
         $sort = $request->query->get('sort', 'activity');
-        $fromDate = $request->query->get('fromDate'); 
-        $toDate = $request->query->get('toDate'); 
+        $fromDate = $request->query->get('fromDate');
+        $toDate = $request->query->get('toDate');
 
         if (!$tagged) {
             return new JsonResponse(['error' => 'El parámetro "tagged" es obligatorio.'], Response::HTTP_BAD_REQUEST);
@@ -62,11 +62,8 @@ class StackOverflowController extends AbstractController
             return new JsonResponse($response, Response::HTTP_OK);
         }
 
-        
-       
-            $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $fromDate, $toDate);
-            $this->entityManager->saveQuestions($data, $queryKey, $tagged);
-       
+        $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $fromDate, $toDate);
+        $this->entityManager->saveQuestions($data, $queryKey, $tagged);
 
         return new JsonResponse($data, Response::HTTP_OK);
     }

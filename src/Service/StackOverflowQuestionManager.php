@@ -33,16 +33,12 @@ class StackOverflowQuestionManager
             $queryResult->setAcceptedAnsweredId($item['accepted_answer_id'] ?? null);
             $queryResult->setAnswerCount($item['answer_count'] ?? 0);
             $queryResult->setScore($item['score'] ?? 0);
-            $queryResult->setLastActivityDate(new \DateTime('@' . $item['last_activity_date']));
-            $queryResult->setCreationDate(new \DateTime('@' . $item['creation_date']));
-            if (isset($question['last_edit_date'])) {
-                $queryResult->setLastEditDate(new \DateTime('@' . $question['last_edit_date']));
-            } else {
-                $queryResult->setLastEditDate(new \DateTime());
-            }
-            $queryResult->setQuestionId($item['question_id']);
-            $queryResult->setLink($item['link']);
-            $queryResult->setTitle($item['title']);
+            $queryResult->setLastActivityDate(isset($item['last_activity_date']) ? new \DateTime('@' . $item['last_activity_date']) : null);
+            $queryResult->setCreationDate(isset($item['creation_date']) ? new \DateTime('@' . $item['creation_date']) : null);
+            $queryResult->setLastEditDate(isset($item['last_edit_date']) ? new \DateTime('@' . $item['last_edit_date']) : null);
+            $queryResult->setQuestionId($item['question_id'] ?? null);
+            $queryResult->setLink($item['link'] ?? null);
+            $queryResult->setTitle($item['title'] ?? null);
             $this->entityManager->persist($queryResult);
         }
         $this->entityManager->flush();
