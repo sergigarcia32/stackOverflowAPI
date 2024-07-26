@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\StackOverflowQuestionRepository;
+use App\Service\RequestValidator;
 use App\Service\StackOverflowQuestionManager;
 use App\Service\StackOverflowServiceInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -14,12 +15,18 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class StackOverflowController extends AbstractController
 {
+    private $requestValidator;
     private $stackOverflowService;
     private $entityManager;
     private $queryResultRepository;
 
-    public function __construct(StackOverflowServiceInterface $stackOverflowService, StackOverflowQuestionManager $questionManager, StackOverflowQuestionRepository $queryResultRepository)
-    {
+    public function __construct(
+        RequestValidator $requestValidator,
+        StackOverflowServiceInterface $stackOverflowService,
+        StackOverflowQuestionManager $questionManager,
+        StackOverflowQuestionRepository $queryResultRepository
+    ) {
+        $this->requestValidator = $requestValidator;
         $this->stackOverflowService = $stackOverflowService;
         $this->entityManager = $questionManager;
         $this->queryResultRepository = $queryResultRepository;
@@ -30,29 +37,26 @@ class StackOverflowController extends AbstractController
      */
     public function getQuestions(Request $request): Response
     {
-        $tagged = $request->query->get('tagged');
-        $order = $request->query->get('order', 'desc');
-        $sort = $request->query->get('sort', 'activity');
-        $fromDate = $request->query->get('fromDate');
-        $toDate = $request->query->get('toDate');
-
-        if (!$tagged) {
-            return new JsonResponse(['error' => 'El parámetro "tagged" es obligatorio.'], Response::HTTP_BAD_REQUEST);
-        }
         try {
+            $this->requestValidator->validateTagged($request);
+            $tagged = $request->query->get('tagged');
+            $order = $request->query->get('order', 'desc');
+            $sort = $request->query->get('sort', 'activity');
+            $dates = $this->requestValidator->validateDates($request);
+
             $queryKey = md5(json_encode([
                 'tagged' => $tagged,
                 'order' => $order,
                 'sort' => $sort,
-                'fromDate' => $fromDate,
-                'toDate' => $toDate
+                'fromDate' => $dates['fromDate'],
+                'toDate' => $dates['toDate'],
             ]));
 
-            $fromDateTime = $fromDate ? new \DateTime($fromDate) : null;
-            $toDateTime = $toDate ? new \DateTime($toDate) : null;
+            $fromDateTime = $dates['fromDate'] ? new \DateTime($dates['fromDate']) : null;
+            $toDateTime = $dates['toDate']? new \DateTime($dates['toDate']) : null;
 
             $existingResult = $this->queryResultRepository->findAllByQuery($queryKey, $fromDateTime, $toDateTime);
-
+           
             if ($existingResult) {
                 $response = [
                     'items' => array_map(function ($result) {
@@ -62,7 +66,7 @@ class StackOverflowController extends AbstractController
                 return new JsonResponse($response, Response::HTTP_OK);
             }
 
-            $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $fromDate, $toDate);
+            $data = $this->stackOverflowService->fetchQuestions($tagged, $order, $sort, $dates['fromDate'], $dates['toDate']);
             if (empty($data)) {
                 return new JsonResponse(['error' => 'No se encontraron preguntas para los criterios especificados.'], Response::HTTP_NOT_FOUND);
             }
