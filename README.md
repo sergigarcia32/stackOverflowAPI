@@ -28,8 +28,7 @@ Sigue estos pasos para configurar y ejecutar la aplicación en tu entorno local:
 
 Primero, clona el repositorio desde GitHub:
 
-git clone https://github.com/tuusuario/tu-repositorio.git
-cd tu-repositorio 
+git clone (https://github.com/sergigarcia32/stackOverflowAPI.git)
 
 ### 2. Ejecutar
 
